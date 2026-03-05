@@ -97,3 +97,86 @@ body {
   color: #367BF0;
   margin-left: 4px;
 }
+
+/* Right-aligned content container */
+.content-right {
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  z-index: 10;
+}
+
+/* Left-aligned content container */
+.content-left {
+  position: absolute;
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* Center content */
+.content-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+/* Animated glow pulse */
+@keyframes glow-pulse {
+  0%, 100% { text-shadow: 0 0 10px #367BF0, 0 0 20px #367BF0, 0 0 30px #367BF0; }
+  50% { text-shadow: 0 0 20px #367BF0, 0 0 40px #367BF0, 0 0 60px #367BF0; }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Floating animation for elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, #367BF0, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button hover glow */
+.cyber-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(54, 123, 240, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.cyber-button:hover::before {
+  left: 100%;
+}
+
+.cyber-button:hover {
+  box-shadow: 0 0 20px rgba(54, 123, 240, 0.5);
+}
