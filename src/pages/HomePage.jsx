@@ -19,10 +19,10 @@ export default function HomePage() {
     <div className="relative min-h-screen">
       {/* 3D Background */}
       <div className="fixed inset-0 -z-10 bg-black">
-        <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
-          <KaliLogo3D scrollProgress={scrollProgress} />
+        <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+          <KaliLogo3D scrollProgress={scrollProgress} position={[2, 0, 0]} />
           <EffectComposer>
-            <Bloom intensity={1.5} luminanceThreshold={0.1} luminanceSmoothing={0.9} />
+            <Bloom intensity={0.8} luminanceThreshold={0.2} luminanceSmoothing={0.9} />
           </EffectComposer>
         </Canvas>
       </div>

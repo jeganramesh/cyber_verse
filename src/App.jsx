@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import GalaxyBackground from './components/GalaxyBackground'
 import Hero from './components/Hero'
 import About from './components/About'
 import Events from './components/Events'
@@ -24,9 +23,6 @@ function App() {
         style={{ scaleX }}
       />
 
-      {/* Galaxy Background - Fixed */}
-      <GalaxyBackground />
-      
       {/* Main content */}
       <div>
         {/* Navigation */}
