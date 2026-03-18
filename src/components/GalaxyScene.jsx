@@ -582,31 +582,30 @@ function KaliLogoCenter({ scrollProgress, mouseRef }) {
     const scroll = scrollProgress.get()
 
     if (groupRef.current) {
-      // Floating up/down
-      groupRef.current.position.y = Math.sin(t * 0.5) * 0.12
-      // Very slow rotation around Y
-      groupRef.current.rotation.y = t * 0.04
-      // Subtle tilt with mouse
-      groupRef.current.rotation.x = mouseRef.current.y * 0.08 + Math.sin(t * 0.3) * 0.02
-      // Move along with camera on scroll
-      groupRef.current.position.z = 0.5 - scroll * 1.5
+      // Subtle floating - no rotation for fixed appearance
+      groupRef.current.position.y = Math.sin(t * 0.5) * 0.08
+      // Fixed position - no rotation
+      groupRef.current.rotation.y = 0
+      groupRef.current.rotation.x = 0
+      // Fixed at front of core
+      groupRef.current.position.z = 2
     }
 
-    // Aura pulse
-    const pulse = 1 + Math.sin(t * 0.8) * 0.12
+    // Subtle aura pulse
+    const pulse = 1 + Math.sin(t * 0.8) * 0.08
     if (aura1Ref.current) aura1Ref.current.scale.setScalar(pulse)
-    if (aura2Ref.current) aura2Ref.current.scale.setScalar(1 + Math.sin(t * 0.5 + 1) * 0.1)
-    if (aura3Ref.current) aura3Ref.current.scale.setScalar(1 + Math.sin(t * 0.35 + 2) * 0.08)
+    if (aura2Ref.current) aura2Ref.current.scale.setScalar(1 + Math.sin(t * 0.5 + 1) * 0.06)
+    if (aura3Ref.current) aura3Ref.current.scale.setScalar(1 + Math.sin(t * 0.35 + 2) * 0.04)
 
-    // Orbit ring slow spin
+    // Ring fixed - no rotation
     if (ringRef.current) {
-      ringRef.current.rotation.z = t * 0.12
-      ringRef.current.rotation.x = Math.PI / 2 + Math.sin(t * 0.18) * 0.15
+      ringRef.current.rotation.z = 0
+      ringRef.current.rotation.x = 0
     }
   })
 
   return (
-    <group ref={groupRef} position={[0, 0, 0.5]}>
+    <group ref={groupRef} position={[0, 0, 2]}>
 
       {/* Wide outer aura — barely visible, very large */}
       <mesh ref={aura3Ref}>
