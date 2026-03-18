@@ -39,8 +39,8 @@ function App() {
   return (
     <VirtualScrollContainer>
       <div className="relative min-h-screen bg-kali-darker overflow-x-hidden virtual-scroll-wrapper">
-        {/* Animated background grid */}
-        <BackgroundGrid />
+        {/* Animated background grid - disabled */}
+        {/* <BackgroundGrid /> */}
         
         {/* Scroll progress bar */}
         <motion.div

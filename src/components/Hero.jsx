@@ -1,6 +1,23 @@
 import { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import GalaxyScene from './GalaxyScene'
+import KaliLogo from '../assets/kalilinux-logo.svg'
+
+// Logo configuration - easy to change values
+const LOGO_CONFIG = {
+  position: { top: '200', left: '200' },  // Change these values to move logo
+  size: { mobile: 'w-40 h-40', desktop: 'w-80 md:h-80' },
+  fadeStart: 0.15,  // Scroll % when fade starts (0-1)
+  fadeEnd: 0.15,    // Scroll % when fully faded (0-1)
+  scaleStart: 1,
+  scaleEnd: 0.8,
+  zIndex: 30,
+  // Smooth zoom animation settings
+  zoomEnabled: true,
+  zoomMin: 1,
+  zoomMax: 1.15,
+  zoomDuration: 3,
+}
 
 function Hero() {
   const containerRef = useRef(null)
@@ -27,50 +44,85 @@ function Hero() {
   }, [])
 
   const scrollSpring = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
+  
+  // Logo opacity based on scroll - fades out smoothly on scroll
+  const logoOpacity = useTransform(scrollYProgress, [0, LOGO_CONFIG.fadeStart], [LOGO_CONFIG.scaleStart, 0])
+  const logoScale = useTransform(scrollYProgress, [0, LOGO_CONFIG.fadeStart], [LOGO_CONFIG.scaleStart, LOGO_CONFIG.scaleEnd])
+
+  // Logo zoom and fade animation
+  const logoRef = useRef(null)
+  useEffect(() => {
+    if (!logoRef.current) return
+    
+    let animationId
+    const animate = () => {
+      if (LOGO_CONFIG.zoomEnabled) {
+        // Smooth zoom animation (sine wave)
+        const time = Date.now() / 1000
+        const zoomScale = LOGO_CONFIG.zoomMin + (Math.sin(time * (2 * Math.PI / LOGO_CONFIG.zoomDuration)) + 1) / 2 * (LOGO_CONFIG.zoomMax - LOGO_CONFIG.zoomMin)
+        logoRef.current.style.transform = `scale(${zoomScale})`
+      }
+      animationId = requestAnimationFrame(animate)
+    }
+    animate()
+    
+    return () => cancelAnimationFrame(animationId)
+  }, [])
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center"
+      style={{ padding: '0 5vw' }}
     >
-      {/* ── 3D Cinematic Galaxy Background ── */}
-      <GalaxyScene />
-
-      {/* Dark vignette overlay so text remains legible */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[1]"
-        style={{
-          background: `radial-gradient(ellipse at 50% 50%,
-            transparent 0%,
-            rgba(0,3,8,0.25) 45%,
-            rgba(0,3,8,0.75) 100%)`,
-        }}
-      />
-
-      {/* ── Hero Content ── */}
+      {/* ── Top Left: Kali Logo (in front of galaxy) ── */}
       <motion.div
-        style={{ y, opacity, scale }}
-        className="relative z-10 text-center px-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        ref={logoRef}
+        className="absolute z-30"
+        style={{ 
+          opacity: logoOpacity,
+          top: `${LOGO_CONFIG.position.top}px`,
+          left: `${LOGO_CONFIG.position.left}px`,
+        }}
       >
+        <img 
+          src={KaliLogo} 
+          alt="Kali Linux" 
+          className={`${LOGO_CONFIG.size.mobile} ${LOGO_CONFIG.size.desktop} drop-shadow-xl`}
+        />
+      </motion.div>
+      {/* ── Left: Galaxy Scene ── */}
+      <div className="left w-1/2 relative" style={{ marginLeft: '-10%' }}>
+        <GalaxyScene />
+      </div>
+
+      {/* ── Right: Content ── */}
+      <div className="right w-1/2 flex flex-col justify-center gap-5 z-10" style={{ paddingLeft: '5%' }}>
+        {/* Dark overlay for text readability */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            background: 'linear-gradient(to right, rgba(0, 3, 8, 0) 0%, transparent 100%)',
+          }}
+        />
+        
+        {/* ── Hero Content ── */}
+        <motion.div
+          style={{ y, opacity, scale, zIndex: 10 }}
+          className="flex flex-col gap-5 items-center text-center"
+        >
         {/* Main title */}
         <motion.h1
           className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-wider"
-          initial={{ opacity: 0, y: 50, scale: 0.85 }}
+          initial={{ opacity: 0,x : 2,y: 50, scale: 0.85 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           style={{
             transform: `translateX(${mousePosition.x * 10}px) translateY(${mousePosition.y * 10}px)`,
+            textShadow: '0 0 40px rgba(54, 123, 240, 0.6), 0 0 80px rgba(0, 212, 255, 0.4)',
           }}
         >
-          <span
-            className="bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent"
-            style={{
-              filter: 'drop-shadow(0 0 30px rgba(80,160,255,0.55))',
-            }}
-          >
+          <span className="text-white">
             CYBERVERSE
           </span>
         </motion.h1>
@@ -123,7 +175,7 @@ function Hero() {
 
         {/* Stats row */}
         <motion.div
-          className="flex flex-wrap justify-center gap-8 mt-16 text-blue-300/60"
+          className="flex flex-wrap gap-10 text-blue-300/60"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.5 }}
@@ -145,7 +197,8 @@ function Hero() {
             </motion.div>
           ))}
         </motion.div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   )
 }

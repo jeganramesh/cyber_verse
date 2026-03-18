@@ -43,9 +43,9 @@ function CameraController({ scrollProgress }) {
     x: -4,
     y: 2,
     z: 18,
-    lookX: 0,
+    lookX: 8,
     lookY: 0,
-    lookZ: 0
+    lookZ: 5  
   })
 
   // Mouse parallax handler
@@ -274,8 +274,8 @@ function GalaxyDisk({ scrollProgress }) {
 
   return (
     <group position={[0, 0, 0]}>
-      {/* Main galaxy disk */}
-      <mesh ref={diskRef} rotation={[Math.PI / 2, 0, 0]}>
+      {/* Main galaxy disk - rotated 10 degrees right */}
+      <mesh ref={diskRef} rotation={[Math.PI / 2, 0, Math.PI / 18]}>
         <planeGeometry args={[26, 26, 1, 1]} />
         <meshBasicMaterial
           map={texture}
@@ -287,8 +287,8 @@ function GalaxyDisk({ scrollProgress }) {
         />
       </mesh>
 
-      {/* Slightly larger ghosted rotation layer for depth */}
-      <mesh ref={disk2Ref} rotation={[Math.PI / 2, 0, 0]}>
+      {/* Slightly larger ghosted rotation layer for depth - rotated 10 degrees right */}
+      <mesh ref={disk2Ref} rotation={[Math.PI / 2, 0, Math.PI / -100]}>
         <planeGeometry args={[30, 30, 1, 1]} />
         <meshBasicMaterial
           map={texture}
