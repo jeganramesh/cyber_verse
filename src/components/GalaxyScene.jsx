@@ -768,7 +768,7 @@ function GalaxyScene() {
         {/* Post-processing */}
         <EffectComposer>
           <Bloom
-            intensity={2.2}
+            intensity={1.0}
             luminanceThreshold={0.08}
             luminanceSmoothing={0.92}
             mipmapBlur

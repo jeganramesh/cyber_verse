@@ -6,6 +6,9 @@ import Events from './components/Events'
 import Timeline from './components/Timeline'
 import Registration from './components/Registration'
 import Footer from './components/Footer'
+import { VirtualScrollContainer, useVirtualScroll, FloatingElement, ScrollReveal, StaggerContainer } from './components/VirtualScrollContainer'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 function App() {
   const { scrollYProgress } = useScroll()
@@ -19,6 +22,9 @@ function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   
   useEffect(() => {
+    // Initialize GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger)
+    
     const handleMouseMove = (e) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 2,
@@ -31,42 +37,54 @@ function App() {
   }, [])
   
   return (
-    <div className="relative min-h-screen bg-kali-darker overflow-x-hidden">
-      {/* Animated background grid */}
-      <BackgroundGrid />
-      
-      {/* Scroll progress bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 z-50 origin-left"
-        style={{ 
-          scaleX,
-          boxShadow: '0 0 20px rgba(54, 123, 240, 0.5), 0 0 40px rgba(0, 212, 255, 0.3)'
-        }}
-      />
+    <VirtualScrollContainer>
+      <div className="relative min-h-screen bg-kali-darker overflow-x-hidden virtual-scroll-wrapper">
+        {/* Animated background grid */}
+        <BackgroundGrid />
+        
+        {/* Scroll progress bar */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 z-50 origin-left"
+          style={{ 
+            scaleX,
+            boxShadow: '0 0 20px rgba(54, 123, 240, 0.5), 0 0 40px rgba(0, 212, 255, 0.3)'
+          }}
+        />
 
-      {/* Main content */}
-      <div>
-        {/* Navigation */}
-        <Navigation mousePosition={mousePosition} />
+        {/* Main content */}
+        <div>
+          {/* Navigation */}
+          <Navigation mousePosition={mousePosition} />
 
-        {/* Main content with scroll animations */}
-        <main>
-          <Hero />
-          <About />
-          <Events />
-          <Timeline />
-          <Registration />
-        </main>
+          {/* Main content with scroll animations */}
+          <main>
+            <ScrollReveal direction="up" delay={0.2}>
+              <Hero />
+            </ScrollReveal>
+            <ScrollReveal direction="up" delay={0.1}>
+              <About />
+            </ScrollReveal>
+            <ScrollReveal direction="up" delay={0.1}>
+              <Events />
+            </ScrollReveal>
+            <ScrollReveal direction="up" delay={0.1}>
+              <Timeline />
+            </ScrollReveal>
+            <ScrollReveal direction="up" delay={0.1}>
+              <Registration />
+            </ScrollReveal>
+          </main>
 
-        <Footer />
+          <Footer />
+        </div>
+
+        {/* Flicker effect overlay */}
+        <FlickerOverlay />
+        
+        {/* Ambient light particles */}
+        <AmbientParticles mousePosition={mousePosition} />
       </div>
-
-      {/* Flicker effect overlay */}
-      <FlickerOverlay />
-      
-      {/* Ambient light particles */}
-      <AmbientParticles mousePosition={mousePosition} />
-    </div>
+    </VirtualScrollContainer>
   )
 }
 

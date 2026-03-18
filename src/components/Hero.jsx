@@ -146,58 +146,6 @@ function Hero() {
           ))}
         </motion.div>
       </motion.div>
-
-      {/* ── Scroll Indicator ── */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-      >
-        <div className="flex flex-col items-center gap-3">
-          <motion.span
-            className="text-xs uppercase tracking-[0.3em] text-blue-400/60"
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            Scroll
-          </motion.span>
-
-          <motion.div
-            className="relative w-8 h-14 border-2 border-blue-400/30 rounded-full overflow-hidden"
-            style={{ boxShadow: '0 0 20px rgba(54,123,240,0.15), inset 0 0 20px rgba(54,123,240,0.08)' }}
-          >
-            <motion.div
-              className="absolute top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full"
-              animate={{
-                y: [2, 32, 2],
-                opacity: [0.5, 1, 0.5],
-                boxShadow: [
-                  '0 0 5px rgba(54,123,240,0.5)',
-                  '0 0 15px rgba(54,123,240,1)',
-                  '0 0 5px rgba(54,123,240,0.5)',
-                ],
-              }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 5, 0], opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <svg className="w-4 h-4 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Corner decorations */}
-      <div className="absolute top-20 left-10 w-32 h-32 border-l-2 border-t-2 border-blue-400/20 rounded-tl-3xl z-10 pointer-events-none" />
-      <div className="absolute top-20 right-10 w-32 h-32 border-r-2 border-t-2 border-blue-400/20 rounded-tr-3xl z-10 pointer-events-none" />
-      <div className="absolute bottom-20 left-10 w-32 h-32 border-l-2 border-b-2 border-blue-400/20 rounded-bl-3xl z-10 pointer-events-none" />
-      <div className="absolute bottom-20 right-10 w-32 h-32 border-r-2 border-b-2 border-blue-400/20 rounded-br-3xl z-10 pointer-events-none" />
     </section>
   )
 }

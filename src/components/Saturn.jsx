@@ -42,11 +42,11 @@ function createGlowTexture() {
   canvas.height = 256
   const ctx = canvas.getContext("2d")
 
-  // Radial gradient for soft glow
+  // Radial gradient for soft glow - reduced intensity
   const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128)
-  gradient.addColorStop(0, "rgba(0, 229, 255, 0.8)")
-  gradient.addColorStop(0.3, "rgba(54, 123, 240, 0.5)")
-  gradient.addColorStop(0.6, "rgba(156, 39, 176, 0.2)")
+  gradient.addColorStop(0, "rgba(0, 229, 255, 0.4)")
+  gradient.addColorStop(0.3, "rgba(54, 123, 240, 0.25)")
+  gradient.addColorStop(0.6, "rgba(156, 39, 176, 0.1)")
   gradient.addColorStop(1, "rgba(0, 0, 0, 0)")
 
   ctx.fillStyle = gradient
@@ -82,20 +82,20 @@ function SaturnPlanet({ position = [-6, -2, 3], scrollProgress = 0, mouseRef }) 
     opacity: 0.9,
   }), [ringTexture])
 
-  // Glow material - sprite for fake bloom
+  // Glow material - sprite for fake bloom - reduced intensity
   const glowMaterial = useMemo(() => new THREE.SpriteMaterial({
     map: glowTexture,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.25,
     blending: THREE.AdditiveBlending,
   }), [glowTexture])
 
-  // Wireframe material for outer sphere
+  // Wireframe material for outer sphere - reduced intensity
   const wireMaterial = useMemo(() => new THREE.MeshBasicMaterial({
     color: 0x66ccff,
     wireframe: true,
     transparent: true,
-    opacity: 0.3,
+    opacity: 0.15,
   }), [])
 
   useFrame((state) => {
@@ -152,8 +152,8 @@ function SaturnPlanet({ position = [-6, -2, 3], scrollProgress = 0, mouseRef }) 
         <primitive object={ringMaterial} attach="material" />
       </mesh>
 
-      {/* Glow Effect - sprite (fake bloom, no postprocessing) */}
-      <sprite ref={glowRef} scale={[5, 5, 1]}>
+      {/* Glow Effect - sprite (fake bloom, no postprocessing) - reduced scale */}
+      <sprite ref={glowRef} scale={[3, 3, 1]}>
         <primitive object={glowMaterial} attach="material" />
       </sprite>
 

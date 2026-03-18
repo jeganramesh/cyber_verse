@@ -44,7 +44,7 @@ function AnimatedRing({
       <meshBasicMaterial
         color={color}
         transparent
-        opacity={0.4}
+        opacity={0.2}
         blending={THREE.AdditiveBlending}
       />
     </mesh>
@@ -158,7 +158,7 @@ function OrbitingParticles({ count = 100, radius = 4 }) {
         size={0.06}
         vertexColors
         transparent
-        opacity={0.8}
+        opacity={0.4}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
         sizeAttenuation
