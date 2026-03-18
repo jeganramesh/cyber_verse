@@ -57,7 +57,7 @@ function Hero() {
       >
         {/* Main title */}
         <motion.h1
-          className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6 tracking-wider"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-wider"
           initial={{ opacity: 0, y: 50, scale: 0.85 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -77,7 +77,7 @@ function Hero() {
 
         {/* Subtitle */}
         <motion.p
-          className="text-xl md:text-3xl text-blue-200/80 mb-10 font-light tracking-wide"
+          className="text-lg md:text-xl text-blue-200/80 mb-8 font-light tracking-wide"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
