@@ -3,7 +3,12 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { useScroll } from 'framer-motion'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import KaliLogo from '../assets/kalilinux-logo.svg'
+
+// Register GSAP ScrollTrigger
+gsap.registerPlugin(ScrollTrigger)
 
 // ─── Scroll hook ──────────────────────────────────────────────────────────────
 function useScrollProgress() {
@@ -25,31 +30,136 @@ function useMouseRef() {
   return mouseRef
 }
 
-// ─── Camera: scroll flies forward, drift + parallax ──────────────────────────
-function CameraController({ scrollProgress, mouseRef }) {
+// ─── Camera Rig - GSAP-powered cinematic animation ─────────────────────────────────
+function CameraController({ scrollProgress }) {
   const { camera } = useThree()
   const time = useRef(0)
+  const mouseRef = useRef({ x: 0, y: 0 })
+  const isInitialized = useRef(false)
+  const timelineRef = useRef(null)
+
+  // Camera rig object - the single source of truth
+  const cameraRig = useRef({
+    x: -4,
+    y: 2,
+    z: 18,
+    lookX: 0,
+    lookY: 0,
+    lookZ: 0
+  })
+
+  // Mouse parallax handler
+  useEffect(() => {
+    const onMove = (e) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
+      mouseRef.current.y = -((e.clientY / window.innerHeight) * 2 - 1)
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+
+  // Setup GSAP Timeline with ScrollTrigger
+  useEffect(() => {
+    const progress = scrollProgress.get()
+    
+    // Create timeline with scrub for smooth scroll sync
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: 'body',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.5, // Smoothness - higher = buttery
+      }
+    })
+
+    // Stage 1: Intro - 45° angle from left corner
+    tl.to(cameraRig.current, {
+      x: -2,
+      y: 1,
+      z: 14,
+      duration: 1,
+      ease: 'power2.out'
+    })
+
+    // Stage 2: Close-up - Zoom toward galaxy center
+    tl.to(cameraRig.current, {
+      x: 0,
+      y: 0.5,
+      z: 10,
+      duration: 1,
+      ease: 'power2.inOut'
+    })
+
+    // Stage 3: Center Align - Move to center
+    tl.to(cameraRig.current, {
+      x: 0,
+      y: 0,
+      z: 8,
+      duration: 1,
+      ease: 'power1.inOut'
+    })
+
+    // Stage 4: Core Focus - Deep zoom (INTENSE moment)
+    tl.to(cameraRig.current, {
+      z: 5,
+      duration: 1.5,
+      ease: 'power3.in'
+    })
+
+    // Stage 5: Exit Wide - Zoom out
+    tl.to(cameraRig.current, {
+      x: 0,
+      y: 0,
+      z: 4,
+      duration: 1.2,
+      ease: 'power2.out'
+    })
+
+    // Add subtle lookAt drift throughout the timeline
+    tl.to(cameraRig.current, {
+      lookX: 0.2,
+      lookY: -0.1,
+      duration: 2
+    }, 0)
+
+    timelineRef.current = tl
+
+    return () => {
+      if (timelineRef.current) {
+        timelineRef.current.kill()
+      }
+    }
+  }, [scrollProgress])
 
   useFrame((_, delta) => {
     time.current += delta
-    const scroll = scrollProgress.get()
 
-    // Scroll: camera moves from z=18 → z=4 flying into galaxy
-    const targetZ = 18 - scroll * 14
-    // Gentle ambient drift
+    // Initialize camera position once
+    if (!isInitialized.current) {
+      camera.position.set(-4, 2, 18)
+      camera.lookAt(0, 0, 0)
+      isInitialized.current = true
+    }
+
+    // Add gentle ambient drift
     const driftX = Math.sin(time.current * 0.14) * 0.35
     const driftY = Math.cos(time.current * 0.09) * 0.2
-    // Mouse parallax
+
+    // Add mouse parallax
     const mx = mouseRef.current.x * 0.6
     const my = mouseRef.current.y * 0.4
 
-    camera.position.x += (driftX + mx - camera.position.x) * 0.025
-    camera.position.y += (driftY + my - camera.position.y) * 0.025
-    camera.position.z += (targetZ - camera.position.z) * 0.04
+    // Apply camera rig position with drift and parallax
+    camera.position.x = cameraRig.current.x + driftX + mx
+    camera.position.y = cameraRig.current.y + driftY + my
+    camera.position.z = cameraRig.current.z
 
-    // Subtle tilt toward center
-    camera.rotation.x += (-camera.position.y * 0.012 - camera.rotation.x) * 0.04
-    camera.rotation.y += (-camera.position.x * 0.012 - camera.rotation.y) * 0.04
+    // Apply lookAt with rig values
+    camera.lookAt(
+      cameraRig.current.lookX,
+      cameraRig.current.lookY,
+      cameraRig.current.lookZ
+    )
   })
 
   return null
@@ -642,7 +752,7 @@ function GalaxyScene() {
         <ambientLight color="#050d20" intensity={0.8} />
 
         {/* Camera controller */}
-        <CameraController scrollProgress={scrollProgress} mouseRef={mouseRef} />
+        <CameraController scrollProgress={scrollProgress} />
 
         {/* Scene elements */}
         <NebulaClouds />

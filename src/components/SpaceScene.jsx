@@ -1,9 +1,150 @@
-import { Canvas } from "@react-three/fiber"
-import { useRef, useMemo } from "react"
+import { Canvas, useThree } from "@react-three/fiber"
+import { useRef, useMemo, useEffect } from "react"
 import { useFrame } from "@react-three/fiber"
-import { EffectComposer, Bloom } from "@react-three/postprocessing"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import * as THREE from "three"
 import KaliLogo from "../assets/kalilinux-logo.svg"
+import GlowingRings from "./GlowingRings"
+import Saturn from "./Saturn"
+
+// Register GSAP ScrollTrigger
+gsap.registerPlugin(ScrollTrigger)
+
+// Cinematic Scroll-Driven Camera with GSAP Timeline
+function CinematicCamera({ scrollProgress }) {
+  const { camera } = useThree()
+  const time = useRef(0)
+  const mouseRef = useRef({ x: 0, y: 0 })
+  const isInitialized = useRef(false)
+  const timelineRef = useRef(null)
+
+  // Camera rig object - the single source of truth
+  const cameraRig = useRef({
+    x: -4,
+    y: 2,
+    z: 6,
+    lookX: 0,
+    lookY: 0,
+    lookZ: 0
+  })
+
+  // Mouse parallax handler
+  useEffect(() => {
+    const onMove = (e) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
+      mouseRef.current.y = -((e.clientY / window.innerHeight) * 2 - 1)
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+
+  // Setup GSAP Timeline with ScrollTrigger
+  useEffect(() => {
+    const progress = scrollProgress.get ? scrollProgress.get() : scrollProgress
+    
+    // Create timeline with scrub for smooth scroll sync
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: 'body',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.5, // Smoothness - higher = buttery
+      }
+    })
+
+    // Stage 1: Intro - 45° angle from left corner
+    tl.to(cameraRig.current, {
+      x: -2,
+      y: 1,
+      z: 4,
+      duration: 1,
+      ease: 'power2.out'
+    })
+
+    // Stage 2: Close-up - Zoom toward planet
+    tl.to(cameraRig.current, {
+      x: 0,
+      y: 0.5,
+      z: 2,
+      duration: 1,
+      ease: 'power2.inOut'
+    })
+
+    // Stage 3: Center Align - Move to center
+    tl.to(cameraRig.current, {
+      x: 0,
+      y: 0,
+      z: 3,
+      duration: 1,
+      ease: 'power1.inOut'
+    })
+
+    // Stage 4: Core Focus - Deep zoom (INTENSE moment)
+    tl.to(cameraRig.current, {
+      z: 1,
+      duration: 1.5,
+      ease: 'power3.in'
+    })
+
+    // Stage 5: Exit Wide - Zoom out
+    tl.to(cameraRig.current, {
+      x: 0,
+      y: 0,
+      z: 6,
+      duration: 1.2,
+      ease: 'power2.out'
+    })
+
+    // Add subtle lookAt drift throughout the timeline
+    tl.to(cameraRig.current, {
+      lookX: 0.2,
+      lookY: -0.1,
+      duration: 2
+    }, 0)
+
+    timelineRef.current = tl
+
+    return () => {
+      if (timelineRef.current) {
+        timelineRef.current.kill()
+      }
+    }
+  }, [scrollProgress])
+
+  useFrame((_, delta) => {
+    time.current += delta
+
+    // Initialize camera position once
+    if (!isInitialized.current) {
+      camera.position.set(-4, 2, 6)
+      camera.lookAt(0, 0, 0)
+      isInitialized.current = true
+    }
+
+    // Add gentle ambient drift
+    const driftX = Math.sin(time.current * 0.14) * 0.35
+    const driftY = Math.cos(time.current * 0.09) * 0.2
+
+    // Add mouse parallax
+    const mx = mouseRef.current.x * 0.6
+    const my = mouseRef.current.y * 0.4
+
+    // Apply camera rig position with drift and parallax
+    camera.position.x = cameraRig.current.x + driftX + mx
+    camera.position.y = cameraRig.current.y + driftY + my
+    camera.position.z = cameraRig.current.z
+
+    // Apply lookAt with rig values
+    camera.lookAt(
+      cameraRig.current.lookX,
+      cameraRig.current.lookY,
+      cameraRig.current.lookZ
+    )
+  })
+
+  return null
+}
 
 // Procedural Spiral Galaxy Component
 function GalaxyBackground({ count = 6000 }) {
@@ -346,50 +487,6 @@ function KaliLogoEnhanced({ scrollProgress = 0 }) {
   )
 }
 
-// Planet Component (Optional foreground element)
-function Planet({ position = [-7, -3, 4] }) {
-  const meshRef = useRef()
-  const ringsRef = useRef()
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.04
-    }
-    if (ringsRef.current) {
-      ringsRef.current.rotation.z = state.clock.elapsedTime * 0.02
-      ringsRef.current.rotation.x = 0.3
-    }
-  })
-  
-  return (
-    <group position={position}>
-      {/* Planet body */}
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[1.2, 32, 32]} />
-        <meshStandardMaterial
-          color="#1a237e"
-          emissive="#1565c0"
-          emissiveIntensity={0.2}
-          roughness={0.8}
-          metalness={0.1}
-        />
-      </mesh>
-      
-      {/* Planet rings */}
-      <mesh ref={ringsRef}>
-        <ringGeometry args={[1.5, 2.2, 64]} />
-        <meshBasicMaterial
-          color="#367bf0"
-          transparent
-          opacity={0.3}
-          side={THREE.DoubleSide}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-    </group>
-  )
-}
-
 // Distant Stars Layer
 function DistantStars({ count = 2000 }) {
   const points = useRef()
@@ -435,20 +532,40 @@ function DistantStars({ count = 2000 }) {
 
 // Main Space Scene Component
 function SpaceScene({ scrollProgress = 0 }) {
+  const mouseRef = useRef({ x: 0, y: 0 })
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  
+  // Reduce particles on mobile for performance
+  const galaxyCount = isMobile ? 3000 : 5000
+  const starsCount = isMobile ? 800 : 1500
+  
+  useEffect(() => {
+    const onMove = (e) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
+      mouseRef.current.y = -((e.clientY / window.innerHeight) * 2 - 1)
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+  
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 75 }}
-        gl={{ antialias: true, alpha: true }}
+        camera={{ position: [0, 0, 8], fov: 60 }}
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
+        dpr={isMobile ? 1 : [1, 2]}
       >
         <color attach="background" args={['#030308']} />
-        <fog attach="fog" args={['#030308', 8, 25]} />
+        <fog attach="fog" args={['#030308', 10, 30]} />
+        
+        {/* Cinematic scroll-driven camera */}
+        <CinematicCamera scrollProgress={scrollProgress} />
         
         {/* Distant background stars */}
-        <DistantStars count={2000} />
+        <DistantStars count={starsCount} />
         
         {/* Main galaxy */}
-        <GalaxyBackground count={6000} />
+        <GalaxyBackground count={galaxyCount} />
         
         {/* Nebula clouds */}
         <NebulaClouds />
@@ -456,24 +573,19 @@ function SpaceScene({ scrollProgress = 0 }) {
         {/* Galactic core */}
         <GalacticCore />
         
+        {/* Glowing rings with custom shaders */}
+        <GlowingRings scrollProgress={scrollProgress} mouseRef={mouseRef} />
+        
         {/* Main Kali logo */}
         <KaliLogoEnhanced scrollProgress={scrollProgress} />
         
-        {/* Optional planet */}
-        <Planet />
+        {/* Saturn-like planet with rings */}
+        <Saturn scrollProgress={scrollProgress} mouseRef={mouseRef} />
         
         {/* Lighting */}
-        <ambientLight intensity={0.1} />
-        
-        {/* Post-processing */}
-        <EffectComposer>
-          <Bloom
-            intensity={1.8}
-            luminanceThreshold={0.1}
-            luminanceSmoothing={0.9}
-            height={300}
-          />
-        </EffectComposer>
+        <ambientLight intensity={0.15} />
+        <pointLight position={[-6, -2, 5]} intensity={1.5} color="#fff5e6" />
+        <pointLight position={[5, 3, 3]} intensity={0.5} color="#b8d4ff" />
       </Canvas>
     </div>
   )
