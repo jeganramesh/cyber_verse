@@ -1,136 +1,42 @@
-```
-/data/data/com.termux/files/home/quizsphere-website/
-├───.env.example
-├───.env.production
-├───.gitignore
-├───index.html
-├───jsconfig.json
-├───package-lock.json
-├───package.json
-├───postcss.config.js
-├───README.md
-├───tailwind.config.js
-├───Todo.md
-├───tsconfig.json
-├───vite.config.js
-├───vitest.config.ts
-├───.vscode/
-│   ├───extensions.json
-│   └───settings.json
-├───node_modules/...
-├───public/
-│   └───favicon.ico
-└───src/
-    ├───App.vue
-    ├───main.js
-    ├───assets/
-    │   └───styles/
-    │       └───main.css
-    ├───components/
-    │   ├───chat/
-    │   │   ├───ChatContainer.vue
-    │   │   ├───ChatHeader.vue
-    │   │   ├───ChatInput.vue
-    │   │   ├───MessageBubble.vue
-    │   │   ├───MessageList.vue
-    │   │   ├───SuggestedPrompts.vue
-    │   │   └───TypingIndicator.vue
-    │   ├───common/
-    │   │   ├───Badge.vue
-    │   │   ├───Breadcrumb.vue
-    │   │   ├───Button.vue
-    │   │   ├───Card.vue
-    │   │   ├───ConfirmDialog.vue
-    │   │   ├───Dropdown.vue
-    │   │   ├───EmptyState.vue
-    │   │   ├───Input.vue
-    │   │   ├───Modal.vue
-    │   │   ├───ProgressBar.vue
-    │   │   ├───Spinner.vue
-    │   │   ├───Tabs.vue
-    │   │   ├───Toast.vue
-    │   │   └───Tooltip.vue
-    │   ├───course/
-    │   │   ├───CourseCard.vue
-    │   │   ├───CourseHeader.vue
-    │   │   ├───LessonPlayer.vue
-    │   │   └───LessonSidebar.vue
-    │   ├───forms/
-    │   │   ├───ClassForm.vue
-    │   │   ├───LessonForm.vue
-    │   │   ├───QuestionBuilder.vue
-    │   │   └───QuizForm.vue
-    │   ├───gamification/
-    │   │   ├───AchievementUnlock.vue
-    │   │   ├───BadgeShowcase.vue
-    │   │   ├───LeaderboardCard.vue
-    │   │   ├───LevelProgress.vue
-    │   │   ├───PointsDisplay.vue
-    │   │   ├───StatsCard.vue
-    │   │   └───StreakCounter.vue
-    │   ├───layout/
-    │   │   ├───Header.vue
-    │   │   ├───MobileNav.vue
-    │   │   ├───Navigation.vue
-    │   │   └───Sidebar.vue
-    │   ├───profile/
-    │   │   └───ProfileHeader.vue
-    │   └───quiz/
-    │       ├───AnswerOption.vue
-    │       ├───QuestionCard.vue
-    │       ├───QuestionReview.vue
-    │       ├───QuizProgress.vue
-    │       ├───ResultsBreakdown.vue
-    │       └───TimerDisplay.vue
-    ├───composables/
-    │   ├───useAuth.ts
-    │   ├───useDebounce.ts
-    │   ├───useFetch.ts
-    │   ├───useForm.ts
-    │   ├───useLocalStorage.ts
-    │   ├───useMediaQuery.ts
-    │   ├───useNotification.ts
-    │   └───useTimer.ts
-    ├───directives/
-    │   ├───v-click-outside.ts
-    │   └───v-lazy-load.ts
-    ├───router/
-    │   └───index.ts
-    ├───services/
-    │   ├───analyticsService.ts
-    │   ├───api.ts
-    │   ├───authService.ts
-    │   ├───courseService.ts
-    │   ├───gamificationService.ts
-    │   ├───leaderboardService.ts
-    │   ├───profileService.ts
-    │   └───quizService.ts
-    ├───stores/
-    │   ├───auth.ts
-    │   ├───game.ts
-    │   ├───theme.ts
-    │   └───ui.ts
-    └───views/
-        ├───HomeView.vue
-        ├───NotFoundView.vue
-        ├───admin/
-        │   └───DashboardView.vue
-        ├───auth/
-        │   └───LoginView.vue
-        ├───student/
-        │   ├───AIChatView.vue
-        │   ├───CourseDetailView.vue
-        │   ├───CoursesView.vue
-        │   ├───DashboardView.vue
-        │   ├───LeaderboardView.vue
-        │   ├───LessonView.vue
-        │   ├───ProfileView.vue
-        │   ├───QuizPlayView.vue
-        │   └───QuizResultsView.vue
-        └───teacher/
-            ├───ClassAnalyticsView.vue
-            ├───CreateLessonView.vue
-            ├───CreateQuizView.vue
-            ├───DashboardView.vue
-            └───ManageClassView.vue
-```
+# 🌐 Cyberverse
+
+> An immersive symposium/event website featuring stunning animations and modern web design
+
+## 📋 Overview
+Cyberverse is a fully responsive event website designed to showcase modern front-end development capabilities. Built with cutting-edge web technologies, it delivers an engaging user experience through dynamic animations and interactive elements.
+
+## ✨ Features
+- 🎨 Stunning animations and transitions
+- 📱 Fully responsive design
+- ⚡ Optimized performance
+- 🖱️ Interactive UI elements
+- 🎯 Modern and sleek interface
+- 🔄 Smooth page transitions
+
+## 🛠️ Technologies Used
+- HTML5
+- CSS3
+- JavaScript
+- [Add any frameworks/libraries you used]
+
+## 🎥 Demo
+[Link to demo video]
+
+## 🚀 Live Preview
+[Link to GitHub Pages if deployed]
+
+## 📸 Screenshots
+[Add your screenshots here]
+
+## 💡 What I Learned
+- Advanced CSS animations
+- Responsive design principles
+- Interactive JavaScript
+- Performance optimization
+
+## 🤝 Contributing
+Feel free to fork this project and submit pull requests!
+
+## 📫 Contact
+- LinkedIn: [Your Profile]
+- Email: [Your Email]
