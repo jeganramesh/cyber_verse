@@ -28,6 +28,12 @@ Cyberverse is a fully responsive event website designed to showcase modern front
 - **PostCSS** (v8.4.32) - A tool for transforming CSS with JavaScript
 - **Autoprefixer** (v10.4.16) - A PostCSS plugin to parse CSS and add vendor prefixes
 
+<img width="1365" height="639" alt="Screenshot from 2026-03-20 00-03-33" src="https://github.com/user-attachments/assets/28707b07-03a0-49a2-beca-f71e0c8f815c" /><img width="1365" height="640" alt="Screenshot from 2026-03-20 00-04-41" src="https://github.com/user-attachments/assets/b2b59d4d-9f63-430a-9023-d5d26b507e52" /><img width="1365" height="636" alt="Screenshot from 2026-03-20 00-05-05" src="https://github.com/user-attachments/assets/d4e73655-aad1-415d-8adf-c36f732d90f2" /><img width="1365" height="637" alt="Screenshot from 2026-03-20 00-04-02" src="https://github.com/user-attachments/assets/72e063b1-1472-403e-ae05-15acb6731faf" />
+
+
+
+
+
 ## 🔧 Installation
 To get a local copy up and running, follow these simple steps.
 
