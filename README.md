@@ -1,6 +1,9 @@
 # 🌐 Cyberverse
 
-> An immersive symposium/event website featuring stunning animations and modern web design
+> An immersive symposium/event website featuring stunning animations and modern web design (with mock data)
+
+## 💭 Why I Built This
+This project was created to explore advanced front-end development techniques, including 3D graphics with Three.js, complex animations with GSAP and Framer Motion, and modern React patterns. It demonstrates my ability to build visually stunning, performant web applications.
 
 
 
