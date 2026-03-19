@@ -6,13 +6,18 @@
 Cyberverse is a fully responsive event website designed to showcase modern front-end development capabilities. Built with cutting-edge web technologies, it delivers an engaging user experience through dynamic animations and interactive elements. This project is perfect for developers looking to learn advanced front-end techniques or for anyone wanting to create a visually stunning event website.
 
 ## 🛠️ Technologies Used
-- **HTML5** - For semantic and accessible markup
-- **CSS3** - For advanced styling, animations, and transitions
-- **JavaScript** - For interactivity and dynamic content
-- **Vite** - A next-generation frontend build tool
-- **React** - A JavaScript library for building user interfaces
-- **Tailwind CSS** - A utility-first CSS framework for rapid UI development
-- [Add any other frameworks/libraries you used]
+- **React** (v18.2.0) - A JavaScript library for building user interfaces
+- **React DOM** (v18.2.0) - React renderer for the DOM
+- **Vite** (v5.0.0) - A next-generation frontend build tool
+- **Tailwind CSS** (v3.4.0) - A utility-first CSS framework for rapid UI development
+- **Three.js** (v0.160.0) - A JavaScript 3D library
+- **@react-three/fiber** (v8.15.0) - A React renderer for Three.js
+- **@react-three/drei** (v9.92.0) - Useful helpers for react-three-fiber
+- **@react-three/postprocessing** (v2.16.0) - Post-processing effects for react-three-fiber
+- **Framer Motion** (v11.0.0) - A library for animations
+- **GSAP** (v3.14.2) - A JavaScript animation library
+- **PostCSS** (v8.4.32) - A tool for transforming CSS with JavaScript
+- **Autoprefixer** (v10.4.16) - A PostCSS plugin to parse CSS and add vendor prefixes
 
 ## 🔧 Installation
 To get a local copy up and running, follow these simple steps.
@@ -113,9 +118,7 @@ Feel free to fork this project and submit pull requests! If you find any issues 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 📫 Contact
-- LinkedIn: [jeganramesh](https://linkedin.com/in/jeganramesh)
-- Email: [jeganramesh@example.com](mailto:jeganramesh@example.com)
+- LinkedIn: [JEGAN .R](https://www.linkedin.com/in/jegan-r-82b3b0329?utm_source=share_via&utm_content=profile&utm_medium=member_android)
+- Email: [jeganjj094@gmail.com](mailto:jeganjj094@gmail.com)
 
 ---
-
-Made with ❤️ by [jeganramesh](https://github.com/jeganramesh)
