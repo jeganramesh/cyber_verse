@@ -13,7 +13,7 @@ const LOGO_CONFIG = {
   scaleEnd: 0.8,
   zIndex: 30,
   // Smooth zoom animation settings
-  zoomEnabled: true,
+  zoomEnabled: false,
   zoomMin: 1,
   zoomMax: 1.15,
   zoomDuration: 3,

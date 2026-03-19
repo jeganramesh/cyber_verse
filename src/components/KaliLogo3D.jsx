@@ -26,9 +26,9 @@ function KaliLogo3D({ scrollProgress = 0, position = [0, 0, 0] }) {
 
     const t = state.clock.elapsedTime
     
-    // Base position with gentle floating animation
+    // Base position (static, no floating)
     const baseX = position[0]
-    const baseY = position[1] + Math.sin(t * 0.6) * 0.15
+    const baseY = position[1]
     const baseZ = position[2]
     
     // Apply scroll - move up and fade back slightly, but stay visible
