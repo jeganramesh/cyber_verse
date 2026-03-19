@@ -2,6 +2,12 @@
 
 > An immersive symposium/event website featuring stunning animations and modern web design
 
+
+
+https://github.com/user-attachments/assets/b4100f18-78cf-4821-b757-52d3e45affe5
+
+
+
 ## 📋 Overview
 Cyberverse is a fully responsive event website designed to showcase modern front-end development capabilities. Built with cutting-edge web technologies, it delivers an engaging user experience through dynamic animations and interactive elements. This project is perfect for developers looking to learn advanced front-end techniques or for anyone wanting to create a visually stunning event website.
 
