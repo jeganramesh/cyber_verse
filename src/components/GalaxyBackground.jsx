@@ -1,27 +1,61 @@
-import { useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Points, PointMaterial } from '@react-three/drei'
+import { useRef, useMemo, useEffect, useState } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
-function Stars({ count = 2000, scrollY = 0 }) {
-  const ref = useRef()
+// Optimized mouse tracking
+function useMousePosition() {
+  const mouseRef = useRef({ x: 0, y: 0 })
   
-  // Generate star positions - random spread across 3D space (not centralized)
+  useEffect(() => {
+    let ticking = false
+    
+    const handleMouseMove = (e) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
+      mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1
+      
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+  
+  return mouseRef
+}
+
+// Camera that responds to mouse
+function CameraController({ mouseRef }) {
+  const { camera } = useThree()
+  
+  useFrame(() => {
+    camera.position.x += (mouseRef.current.x * 0.1 - camera.position.x) * 0.02
+    camera.position.y += (mouseRef.current.y * 0.08 - camera.position.y) * 0.02
+    camera.lookAt(0, 0, 0)
+  })
+  
+  return null
+}
+
+// Optimized Stars with better performance
+function Stars({ count = 2500 }) {
+  const ref = useRef()
+  const mouseRef = useMousePosition()
+  
   const positions = useMemo(() => {
-    console.log('[Stars] Generating positions for count:', count)
     const positions = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
-      // Random positions in a large 3D box, centered around origin
-      // Using larger spread for more natural look
-      positions[i * 3] = (Math.random() - 0.5) * 6  // x: -3 to 3
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 6  // y: -3 to 3
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 4  // z: -2 to 2 (shallower depth)
+      positions[i * 3] = (Math.random() - 0.5) * 6
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 6
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 4
     }
-    console.log('[Stars] Positions generated, sample:', positions[0], positions[1], positions[2])
     return positions
   }, [count])
 
-  // Generate star colors
   const starColors = useMemo(() => {
     const colors = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
@@ -45,43 +79,136 @@ function Stars({ count = 2000, scrollY = 0 }) {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.01
-      ref.current.rotation.x = state.clock.elapsedTime * 0.005
-      ref.current.position.y = scrollY * 0.0001
+      ref.current.rotation.y = state.clock.elapsedTime * 0.008
+      ref.current.rotation.x = state.clock.elapsedTime * 0.004
+      
+      // Subtle mouse parallax
+      ref.current.position.x = mouseRef.current.x * 0.1
+      ref.current.position.y = mouseRef.current.y * 0.1
     }
   })
 
   return (
-    <group rotation={[0, 0, Math.PI / 4]}>
-      <Points ref={ref} positions={positions} colors={starColors} stride={3} frustumCulled={false}>
-        <PointMaterial
+    <group ref={ref} rotation={[0, 0, Math.PI / 4]}>
+      <points>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={count}
+            array={positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            count={count}
+            array={starColors}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
           transparent
           vertexColors
-          size={0.008}
+          size={0.006}
           sizeAttenuation={true}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
-          opacity={0.9}
+          opacity={0.85}
         />
-      </Points>
+      </points>
     </group>
   )
 }
 
-function GalaxyBackground() {
-  const scrollY = typeof window !== 'undefined' ? window.scrollY : 0
+// Twinkling stars overlay
+function TwinklingStars({ count = 500 }) {
+  const ref = useRef()
+  const [positions, colors] = useMemo(() => {
+    const pos = new Float32Array(count * 3)
+    const cols = new Float32Array(count * 3)
+    
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3
+      pos[i3] = (Math.random() - 0.5) * 8
+      pos[i3 + 1] = (Math.random() - 0.5) * 8
+      pos[i3 + 2] = -1 - Math.random() * 3
+      
+      // Brighter colors
+      cols[i3] = 0.9 + Math.random() * 0.1
+      cols[i3 + 1] = 0.95
+      cols[i3 + 2] = 1.0
+    }
+    
+    return [pos, cols]
+  }, [count])
   
-  // Debug: Log when component renders
-  console.log('[GalaxyBackground] Rendering with scrollY:', scrollY)
+  useFrame((state) => {
+    if (ref.current) {
+      // Very slow drift
+      ref.current.rotation.z = state.clock.elapsedTime * 0.002
+    }
+  })
+  
+  return (
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={count}
+          array={colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.015}
+        vertexColors
+        transparent
+        opacity={0.9}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        sizeAttenuation
+      />
+    </points>
+  )
+}
+
+// Optimized main component
+function GalaxyBackground() {
+  const mouseRef = useMousePosition()
   
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
-      {/* Full screen canvas */}
-      <Canvas camera={{ position: [0, 0, 1], fov: 75 }}>
-        <color attach="background" args={['#050505']} />
-        <Stars count={3000} scrollY={scrollY} />
-        <fog attach="fog" args={['#050505', 0.5, 3]} />
+      <Canvas 
+        camera={{ position: [0, 0, 1.5], fov: 75 }}
+        gl={{ 
+          antialias: true, 
+          alpha: false,
+          powerPreference: 'high-performance'
+        }}
+        dpr={[1, 1.5]}
+      >
+        <color attach="background" args={['#030308']} />
+        
+        <CameraController mouseRef={mouseRef} />
+        
+        <Stars count={2500} />
+        <TwinklingStars count={400} />
+        
+        <fog attach="fog" args={['#030308', 0.8, 4]} />
       </Canvas>
+      
+      {/* Gradient overlay for depth */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(3, 3, 8, 0.3) 50%, rgba(3, 3, 8, 0.8) 100%)',
+        }}
+      />
     </div>
   )
 }
